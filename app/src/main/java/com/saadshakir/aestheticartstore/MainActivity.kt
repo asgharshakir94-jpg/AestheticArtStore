@@ -1,5 +1,6 @@
 package com.saadshakir.aestheticartstore
 
+import kotlinx.coroutines.launch
 import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
@@ -228,13 +229,14 @@ fun PurchaseScreen(
     onBuyClick: () -> Unit
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
+    // We use a CoroutineScope to handle the background internet download safely
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
 
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // FIXED: Uses clean AsyncImage reference from Part 1 imports
         AsyncImage(
             model = artwork.imageUrl,
             contentDescription = artwork.title,
@@ -268,12 +270,75 @@ fun PurchaseScreen(
             } else {
                 Button(
                     onClick = {
-                        Toast.makeText(context, "High-Res download function ready!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Downloading High-Res from GitHub...", Toast.LENGTH_SHORT).show()
+
+                        // FIXED: Launches a background thread to download the live image stream from GitHub
+                        coroutineScope.launch {
+                            downloadAndSaveFromGitHub(context, artwork.imageUrl, artwork.title)
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text("Download High-Res")
                 }
+            }
+        }
+    }
+}
+
+// NEW: Downloads the image file from the GitHub link and inserts it directly into the phone's gallery
+suspend fun downloadAndSaveFromGitHub(context: android.content.Context, urlString: String, title: String) {
+    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+        try {
+            // Uses Coil to fetch the image from the internet link
+            val loader = coil.ImageLoader(context)
+            val request = coil.request.ImageRequest.Builder(context)
+                .data(urlString)
+                .allowHardware(false) // Required to convert to a copyable bitmap stream safely
+                .build()
+
+            val result = (loader.execute(request) as? coil.request.SuccessResult)?.drawable
+            val bitmap = (result as? android.graphics.drawable.BitmapDrawable)?.bitmap
+
+            if (bitmap != null) {
+                val filename = "${title.replace(" ", "_")}_HighRes.jpg"
+                val contentValues = android.content.ContentValues().apply {
+                    put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                        put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, android.os.Environment.DIRECTORY_PICTURES + "/AestheticArtStore")
+                        put(android.provider.MediaStore.MediaColumns.IS_PENDING, 1)
+                    }
+                }
+
+                val resolver = context.contentResolver
+                val imageUri = resolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+                if (imageUri != null) {
+                    val outputStream = resolver.openOutputStream(imageUri)
+                    if (outputStream != null) {
+                        bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, outputStream)
+                        outputStream.close()
+                    }
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                        contentValues.clear()
+                        contentValues.put(android.provider.MediaStore.MediaColumns.IS_PENDING, 0)
+                        resolver.update(imageUri, contentValues, null, null)
+                    }
+
+                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        Toast.makeText(context, "Saved to Gallery under Pictures/AestheticArtStore!", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } else {
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    Toast.makeText(context, "Failed to download image data.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: Exception) {
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                Toast.makeText(context, "Download Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
