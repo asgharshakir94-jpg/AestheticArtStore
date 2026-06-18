@@ -1,6 +1,5 @@
 package com.saadshakir.aestheticartstore
 
-import kotlinx.coroutines.launch
 import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
@@ -29,7 +28,10 @@ import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
-import coil.compose.AsyncImage // Corrected, error-free library import
+import coil3.compose.AsyncImage // FIXED: Modern Coil 3.x package mapping path architecture
+import coil3.toBitmap
+import kotlinx.coroutines.launch
+import com.saadshakir.aestheticartstore.R // FIXED: Explicitly maps resource directory pointers to clear drawable errors
 
 data class Artwork(val title: String, val description: String, val priceText: String, val imageUrl: String)
 
@@ -181,8 +183,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-} // This brace closes the MainActivity class completely
-
+} // This specific brace seals the main Activity class container safely
 @Composable
 fun ArtStoreGallery(artworkList: List<Artwork>, onArtClick: (Int) -> Unit) {
     LazyVerticalGrid(
@@ -199,7 +200,6 @@ fun ArtStoreGallery(artworkList: List<Artwork>, onArtClick: (Int) -> Unit) {
                     .clickable { onArtClick(index) }
             ) {
                 Column {
-                    // FIXED: Uses clean AsyncImage reference from Part 1 imports
                     AsyncImage(
                         model = artwork.imageUrl,
                         contentDescription = artwork.title,
@@ -229,7 +229,6 @@ fun PurchaseScreen(
     onBuyClick: () -> Unit
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
-    // We use a CoroutineScope to handle the background internet download safely
     val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
 
     Column(
@@ -271,8 +270,6 @@ fun PurchaseScreen(
                 Button(
                     onClick = {
                         Toast.makeText(context, "Downloading High-Res from GitHub...", Toast.LENGTH_SHORT).show()
-
-                        // FIXED: Launches a background thread to download the live image stream from GitHub
                         coroutineScope.launch {
                             downloadAndSaveFromGitHub(context, artwork.imageUrl, artwork.title)
                         }
@@ -285,20 +282,16 @@ fun PurchaseScreen(
         }
     }
 }
-
-// NEW: Downloads the image file from the GitHub link and inserts it directly into the phone's gallery
 suspend fun downloadAndSaveFromGitHub(context: android.content.Context, urlString: String, title: String) {
     kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
         try {
-            // Uses Coil to fetch the image from the internet link
-            val loader = coil.ImageLoader(context)
-            val request = coil.request.ImageRequest.Builder(context)
+            val loader = coil3.ImageLoader(context)
+            val request = coil3.request.ImageRequest.Builder(context)
                 .data(urlString)
-                .allowHardware(false) // Required to convert to a copyable bitmap stream safely
                 .build()
 
-            val result = (loader.execute(request) as? coil.request.SuccessResult)?.drawable
-            val bitmap = (result as? android.graphics.drawable.BitmapDrawable)?.bitmap
+            val result = (loader.execute(request) as? coil3.request.SuccessResult)?.image
+            val bitmap = result?.toBitmap()
 
             if (bitmap != null) {
                 val filename = "${title.replace(" ", "_")}_HighRes.jpg"

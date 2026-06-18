@@ -51,6 +51,7 @@ dependencies {
     testImplementation(libs.junit)
     implementation(libs.play.billing)
     implementation(libs.coil.compose)
+    implementation(libs.coil.network) // Required in Coil 3.x to load network images safely
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
