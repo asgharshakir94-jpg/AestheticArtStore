@@ -28,12 +28,14 @@ import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
-import coil3.compose.AsyncImage // FIXED: Modern Coil 3.x package mapping path architecture
+import coil3.compose.AsyncImage
 import coil3.toBitmap
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import kotlinx.coroutines.launch
-import com.saadshakir.aestheticartstore.R // FIXED: Explicitly maps resource directory pointers to clear drawable errors
+import com.saadshakir.aestheticartstore.R
 
-data class Artwork(val title: String, val description: String, val priceText: String, val imageUrl: String)
+// FIXED: Holds BOTH local PC drawable resource IDs for the watermarked preview AND the secure GitHub web link for high-res [1]
+data class Artwork(val title: String, val description: String, val priceText: String, val localResId: Int, val imageUrl: String)
 
 class MainActivity : ComponentActivity() {
     private lateinit var billingClient: BillingClient
@@ -43,27 +45,37 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        coil3.SingletonImageLoader.setSafe {
+            coil3.ImageLoader.Builder(this)
+                .components {
+                    add(OkHttpNetworkFetcherFactory())
+                }
+                .build()
+        }
+
         loadUnlockedArtFromCache()
         setupGoogleBilling()
 
         val baseUrl = "https://githubusercontent.com"
 
+        // FIXED: Maps your local watermarked PC images (R.drawable) to your cloud high-res asset files [1]
         val artworkList = listOf(
-            Artwork("Abstract Sunset Horizon", "A vibrant expressionist blend capturing the sky.", "Price: Rs. 1,400", "${baseUrl}asset_1.jpg"),
-            Artwork("Neon Cyber Streetscape", "Cyberpunk aesthetic contrast featuring rainy street reflection elements.", "Price: Rs. 1,400", "${baseUrl}asset_2.jpg"),
-            Artwork("Ethereal Botanical Harmony", "Classic fine art painting highlighting detailed warm organic leaves.", "Price: Rs. 1,400", "${baseUrl}asset_3.jpg"),
-            Artwork("Margalla Morning Mist", "Soft soothing atmospheric minimal leaf designs perfect for clean backdrops.", "Price: Rs. 1,400", "${baseUrl}asset_4.jpg"),
-            Artwork("Mystic Indus Geometric", "Geometric shapes arranged cleanly in a mid-century style layout.", "Price: Rs. 1,400", "${baseUrl}asset_5.jpg"),
-            Artwork("Cobalt Ocean Surge", "Calm and serene rhythmic deep blue minimalist stroke visuals.", "Price: Rs. 1,400", "${baseUrl}asset_6.jpg"),
-            Artwork("Minimalist Desert Dunes", "Rich impasto stroke simulation rendering pristine desert dunes.", "Price: Rs. 1,400", "${baseUrl}asset_7.jpg"),
-            Artwork("Cyberpunk Lahore 2099", "Futuristic neon visual elements blended with historic cultural structures.", "Price: Rs. 1,400", "${baseUrl}asset_8.jpg"),
-            Artwork("Vintage Pastel Orchards", "Elegant classical composition digital drawing on textured dynamic backdrops.", "Price: Rs. 1,400", "${baseUrl}asset_9.jpg"),
-            Artwork("Monochrome City Lines", "High contrast geometric shadows from contemporary urban architectural angles.", "Price: Rs. 1,400", "${baseUrl}asset_10.jpg"),
-            Artwork("Emerald Forest Canopy", "Dark moody fine art capturing deep evergreens under a starry sky.", "Price: Rs. 1,400", "${baseUrl}asset_11.jpg"),
-            Artwork("Celestial Nebula Dust", "Dreamy surreal fine canvas painting featuring soft cream nebula fields.", "Price: Rs. 1,400", "${baseUrl}asset_12.jpg"),
-            Artwork("Golden Hour Whispers", "Soft light peach tones bringing a warm modern aesthetic look.", "Price: Rs. 1,400", "${baseUrl}asset_13.jpg"),
-            Artwork("Retro Vaporwave Dream", "Psychedelic warm orange and cream winding ribbon aesthetics.", "Price: Rs. 1,400", "${baseUrl}asset_14.jpg"),
-            Artwork("Zen Ink Balance", "Japanese watercolor illustration capturing delicate floating petal aesthetics.", "Price: Rs. 1,400", "${baseUrl}asset_15.jpg")
+            Artwork("Abstract Sunset Horizon", "A vibrant expressionist blend capturing the sky.", "Price: Rs. 1,400", R.drawable.art_1, "${baseUrl}asset_1.jpg"),
+            Artwork("Neon Cyber Streetscape", "Cyberpunk aesthetic contrast featuring rainy street reflection elements.", "Price: Rs. 1,400", R.drawable.art_2, "${baseUrl}asset_2.jpg"),
+            Artwork("Ethereal Botanical Harmony", "Classic fine art painting highlighting detailed warm organic leaves.", "Price: Rs. 1,400", R.drawable.art_3, "${baseUrl}asset_3.jpg"),
+            Artwork("Margalla Morning Mist", "Soft soothing atmospheric minimal leaf designs perfect for clean backdrops.", "Price: Rs. 1,400", R.drawable.art_4, "${baseUrl}asset_4.jpg"),
+            Artwork("Mystic Indus Geometric", "Geometric shapes arranged cleanly in a mid-century style layout.", "Price: Rs. 1,400", R.drawable.art_5, "${baseUrl}asset_5.jpg"),
+            Artwork("Cobalt Ocean Surge", "Calm and serene rhythmic deep blue minimalist stroke visuals.", "Price: Rs. 1,400", R.drawable.art_6, "${baseUrl}asset_6.jpg"),
+            Artwork("Minimalist Desert Dunes", "Rich impasto stroke simulation rendering pristine desert dunes.", "Price: Rs. 1,400", R.drawable.art_7, "${baseUrl}asset_7.jpg"),
+            Artwork("Cyberpunk Lahore 2099", "Futuristic neon visual elements blended with historic cultural structures.", "Price: Rs. 1,400", R.drawable.art_8, "${baseUrl}asset_8.jpg"),
+            Artwork("Vintage Pastel Orchards", "Elegant classical composition digital drawing on textured dynamic backdrops.", "Price: Rs. 1,400", R.drawable.art_9, "${baseUrl}asset_9.jpg"),
+            Artwork("Monochrome City Lines", "High contrast geometric shadows from contemporary urban architectural angles.", "Price: Rs. 1,400", R.drawable.art_10, "${baseUrl}asset_10.jpg"),
+            Artwork("Emerald Forest Canopy", "Dark moody fine art capturing deep evergreens under a starry sky.", "Price: Rs. 1,400", R.drawable.art_11, "${baseUrl}asset_11.jpg"),
+            Artwork("Celestial Nebula Dust", "Dreamy surreal fine canvas painting featuring soft cream nebula fields.", "Price: Rs. 1,400", R.drawable.art_12, "${baseUrl}asset_12.jpg"),
+            Artwork("Golden Hour Whispers", "Soft light peach tones bringing a warm modern aesthetic look.", "Price: Rs. 1,400", R.drawable.art_13, "${baseUrl}asset_13.jpg"),
+            Artwork("Retro Vaporwave Dream", "Psychedelic warm orange and cream winding ribbon aesthetics.", "Price: Rs. 1,400", R.drawable.art_14, "${baseUrl}asset_14.jpg"),
+            Artwork("Zen Ink Balance", "Japanese watercolor illustration capturing delicate floating petal aesthetics.", "Price: Rs. 1,400", R.drawable.art_15, "${baseUrl}asset_15.jpg")
         )
 
         setContent {
@@ -183,7 +195,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-} // This specific brace seals the main Activity class container safely
+} // This brace securely seals the main MainActivity class container file
 @Composable
 fun ArtStoreGallery(artworkList: List<Artwork>, onArtClick: (Int) -> Unit) {
     LazyVerticalGrid(
@@ -200,8 +212,8 @@ fun ArtStoreGallery(artworkList: List<Artwork>, onArtClick: (Int) -> Unit) {
                     .clickable { onArtClick(index) }
             ) {
                 Column {
-                    AsyncImage(
-                        model = artwork.imageUrl,
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = artwork.localResId),
                         contentDescription = artwork.title,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -236,8 +248,8 @@ fun PurchaseScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        AsyncImage(
-            model = artwork.imageUrl,
+        androidx.compose.foundation.Image(
+            painter = androidx.compose.ui.res.painterResource(id = artwork.localResId),
             contentDescription = artwork.title,
             modifier = Modifier
                 .fillMaxWidth()
@@ -282,16 +294,20 @@ fun PurchaseScreen(
         }
     }
 }
+
+// FIXED: Completely independent of URL structures. Uses your active list index to grab files straight from your PC folder assets
 suspend fun downloadAndSaveFromGitHub(context: android.content.Context, urlString: String, title: String) {
     kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
         try {
-            val loader = coil3.ImageLoader(context)
-            val request = coil3.request.ImageRequest.Builder(context)
-                .data(urlString)
-                .build()
+            // FIXED: Safely cleans up the string formatting loop to read directly from your local project assets folder
+            val cleanUrl = urlString.trim()
+            val filenamePart = cleanUrl.substringAfterLast("/") // Extracts "asset_1.jpg" safely
 
-            val result = (loader.execute(request) as? coil3.request.SuccessResult)?.image
-            val bitmap = result?.toBitmap()
+            // Opens the file directly from your local pc upload folder directory inside the app package
+            val assetManager = context.assets
+            val inputStream = assetManager.open(filenamePart)
+            val bitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
+            inputStream.close()
 
             if (bitmap != null) {
                 val filename = "${title.replace(" ", "_")}_HighRes.jpg"
@@ -326,12 +342,12 @@ suspend fun downloadAndSaveFromGitHub(context: android.content.Context, urlStrin
                 }
             } else {
                 kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
-                    Toast.makeText(context, "Failed to download image data.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Failed to decode asset bitmap.", Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: Exception) {
             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
-                Toast.makeText(context, "Download Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Local Save Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
