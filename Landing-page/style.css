@@ -1,0 +1,173 @@
+/* ==========================================
+   1. RESET & BASE STYLES
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #f7f9f6 0%, #edf1ec 100%);
+    color: #2c3e2b; /* Deep earthy green-gray */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* ==========================================
+   2. HERO CONTAINER (TOP SECTION)
+   ========================================== */
+.hero-container {
+    text-align: center;
+    max-width: 500px;
+    margin: auto;
+}
+
+.app-icon {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 10px 15px rgba(44, 62, 43, 0.15));
+}
+
+.app-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.2rem; /* Scaled perfectly for mobile screens */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #1b331e; /* Dark forest green */
+    margin-bottom: 12px;
+}
+
+.app-tagline {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: #556b53; /* Soft sage green */
+    margin-bottom: 32px;
+}
+
+/* ==========================================
+   3. PLAY STORE DOWNLOAD BUTTON
+   ========================================== */
+.download-btn {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #2d6a4f; /* Emerald green matching bonsai */
+    color: #ffffff;
+    font-size: 0.85rem; /* Scaled down for mobile */
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 14px 28px; /* Balanced mobile padding */
+    border-radius: 50px;
+    box-shadow: 0 4px 14px rgba(45, 106, 79, 0.3);
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.download-btn:hover {
+    background-color: #1b4332;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 106, 79, 0.4);
+}
+
+/* ==========================================
+   4. APP SCREENSHOTS GALLERY ROW
+   ========================================== */
+.app-screenshots {
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.app-screenshots h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.4rem;
+    color: #1b331e;
+    margin-bottom: 20px;
+}
+
+/* Horizontal Scroll Container for Mobile Screens */
+.screenshot-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 10px 20px;
+    overflow-x: auto; /* Enables swipe to scroll horizontally */
+    scroll-snap-type: x mandatory; /* Makes images snap into place */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbars for a cleaner, modern look */
+.screenshot-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* Elegant Smartphone Frame Style (Optimized Max-Width) */
+.phone-mockup {
+    flex: 0 0 70%; /* Shows one main screenshot and hints at the next */
+    width: 100%;
+    max-width: 180px; /* Restricts giant high-res phone files from stretching */
+    height: auto;
+    border-radius: 20px;
+    border: 5px solid #1b331e; /* Sleek forest green bezel */
+    box-shadow: 0 12px 30px rgba(44, 62, 43, 0.15);
+    object-fit: cover;
+    scroll-snap-align: center;
+    transition: transform 0.3s ease;
+}
+
+/* ==========================================
+   5. DESKTOP & TABLET RESPONSIVE SCALING
+   ========================================== */
+@media (min-width: 768px) {
+    .app-title {
+        font-size: 2.8rem; /* Grows beautifully on large screens */
+    }
+
+    .download-btn {
+        font-size: 0.95rem;
+        padding: 16px 38px;
+    }
+
+    .screenshot-wrapper {
+        justify-content: center; /* Centers screenshots side-by-side on desktop */
+        overflow-x: visible;
+    }
+
+    .phone-mockup {
+        flex: 0 0 28%; /* Adjusts scaling to fit display layouts cleanly */
+    }
+
+    .phone-mockup:hover {
+        transform: translateY(-5px);
+    }
+}
+
+/* ==========================================
+   6. FOOTER LINKS
+   ========================================== */
+.footer-links {
+    font-size: 0.9rem;
+    color: #889988;
+    margin-top: 40px;
+}
+
+.footer-links a {
+    color: #556b53;
+    text-decoration: none;
+    margin: 0 8px;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #1b331e;
+    text-decoration: underline;
+}
