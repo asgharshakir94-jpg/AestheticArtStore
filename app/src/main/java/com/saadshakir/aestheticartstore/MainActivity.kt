@@ -1,5 +1,6 @@
 package com.saadshakir.aestheticartstore
 
+
 import com.saadshakir.aestheticartstore.R
 import android.app.Activity
 import android.content.Context
@@ -17,8 +18,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.billingclient.api.*
 
-// The clean data models mapping local resources and cloud links
+// 1. DATA MODELS
 data class Artwork(
     val title: String,
     val description: String,
@@ -40,427 +44,269 @@ data class StoreItem(
     val assetIndexString: String,
     val artwork: Artwork
 )
+
 object StoreData {
     fun getItems(): List<StoreItem> {
         return listOf(
             StoreItem("art_asset_1", "1", Artwork(
-                "Abstract Sunset Horizon",
-                "A vibrant expressionist blend capturing the sky.",
-                "Rs. 1400",
-                R.drawable.art_1,
-                "https://drive.google.com/uc?id=1T4hsNAFr6G9lzg8tcPFcI2_IL_ILafwc"
+                "Abstract Sunset Horizon", "A vibrant expressionist blend capturing the sky.", "Rs. 1400", R.drawable.art_1, "https://google.com"
             )),
             StoreItem("art_asset_2", "2", Artwork(
-                "Neon Cyber Streetscape",
-                "Calm and serene rhythmic deep blue minimalist stroke visuals.",
-                "Rs. 1400",
-                R.drawable.art_2,
-                "https://drive.google.com/uc?id=1ZECC3rJRslYOpJcglV54NWbIL8Bwix1i"
+                "Neon Cyber Streetscape", "Calm and serene rhythmic deep blue minimalist stroke visuals.", "Rs. 1400", R.drawable.art_2, "https://google.com"
             )),
             StoreItem("art_asset_3", "3", Artwork(
-                "Ethereal Botanical Harmony",
-                "Classic fine art painting highlighting detailed warm organic leaves.",
-                "Rs. 1400",
-                R.drawable.art_3,
-                "https://drive.google.com/uc?id=14tzDWHXIKPF5GXmeMUkTuq7Gt_HDsTuE"
+                "Ethereal Botanical Harmony", "Classic fine art painting highlighting detailed warm organic leaves.", "Rs. 1400", R.drawable.art_3, "https://google.com"
             )),
             StoreItem("art_asset_4", "4", Artwork(
-                "Margalla Morning Mist",
-                "Cyberpunk aesthetic contrast featuring rainy street reflection elements.",
-                "Rs. 1400",
-                R.drawable.art_4,
-                "https://drive.google.com/uc?id=1ahxm-oJDvFDhUHGWFvXF2v0VguXn5IIq"
+                "Margalla Morning Mist", "Cyberpunk aesthetic contrast featuring rainy street reflection elements.", "Rs. 1400", R.drawable.art_4, "https://google.com"
             )),
             StoreItem("art_asset_5", "5", Artwork(
-                "Mystic Indus Geometric",
-                "Soft light peach tones bringing a warm modern aesthetic look.",
-                "Rs. 1400",
-                R.drawable.art_5,
-                "https://drive.google.com/uc?id=1ny9sVxmc5ZBK2KCsIcGLDEK7cBb_ExIz"
+                "Mystic Indus Geometric", "Soft light peach tones bringing a warm modern aesthetic look.", "Rs. 1400", R.drawable.art_5, "https://google.com"
             )),
             StoreItem("art_asset_6", "6", Artwork(
-                "Cobalt Ocean Surge",
-                "Dreamy surreal fine canvas painting featuring soft cream nebula fields.",
-                "Rs. 1400",
-                R.drawable.art_6,
-                "https://drive.google.com/uc?id=1HrOJgHmMA3J-XDky76VGCzhcw8TgaMN4"
+                "Cobalt Ocean Surge", "Dreamy surreal fine canvas painting featuring soft cream nebula fields.", "Rs. 1400", R.drawable.art_6, "https://google.com"
             )),
             StoreItem("art_asset_7", "7", Artwork(
-                "Minimalist Desert Dunes",
-                "Geometric shapes arranged cleanly in mid-century style.",
-                "Rs. 1400",
-                R.drawable.art_7,
-                "https://drive.google.com/uc?id=1zCSlgbYv-cz4G3wyKCNVcO-W3ILShfDx"
+                "Minimalist Desert Dunes", "Geometric shapes arranged cleanly in mid-century style.", "Rs. 1400", R.drawable.art_7, "https://google.com"
             )),
             StoreItem("art_asset_8", "8", Artwork(
-                "Cyberpunk Lahore 2099",
-                "Dark moody fine art capturing deep evergreens under a starry sky.",
-                "Rs. 1400",
-                R.drawable.art_8,
-                "https://drive.google.com/uc?id=1Sa6q_NZItUytsSorO-UWqYWljMHy1rk5"
+                "Cyberpunk Lahore 2099", "Dark moody fine art capturing deep evergreens under a starry sky.", "Rs. 1400", R.drawable.art_8, "https://google.com"
             )),
             StoreItem("art_asset_9", "9", Artwork(
-                "Vintage Pastel Orchards",
-                "Elegant classical sculpture digital drawing on textured dynamic backdrops.",
-                "Rs. 1400",
-                R.drawable.art_9,
-                "https://drive.google.com/uc?id=1hBSxHs8RuyhlJy-Hthoxo_AZjBH5WgzC"
+                "Vintage Pastel Orchards", "Elegant classical sculpture digital drawing on textured dynamic backdrops.", "Rs. 1400", R.drawable.art_9, "https://google.com"
             )),
             StoreItem("art_asset_10", "10", Artwork(
-                "Monochrome City Lines",
-                "Japanese watercolor illustration capturing delicate floating petal aesthetics.",
-                "Rs. 1400",
-                R.drawable.art_10,
-                "https://drive.google.com/uc?id=1heRbetzCZv3ey8kpSqD2cJ8duaVfqPHe"
+                "Monochrome City Lines", "Japanese watercolor illustration capturing delicate floating petal aesthetics.", "Rs. 1400", R.drawable.art_10, "https://google.com"
             )),
             StoreItem("art_asset_11", "11", Artwork(
-                "Emerald Forest Canopy",
-                "High contrast geometric shadows from contemporary urban architectural angles.",
-                "Rs. 1400",
-                R.drawable.art_11,
-                "https://drive.google.com/uc?id=1adM644PIm4cJQ0Y0D5rAtpzALrJWrOtc"
+                "Emerald Forest Canopy", "High contrast geometric shadows from contemporary urban architectural angles.", "Rs. 1400", R.drawable.art_11, "https://google.com"
             )),
             StoreItem("art_asset_12", "12", Artwork(
-                "Celestial Nebula Dust",
-                "Psychedelic warm orange and cream winding ribbon aesthetics.",
-                "Rs. 1400",
-                R.drawable.art_12,
-                "https://drive.google.com/uc?id=1VASX838TH4y6mhrXXslCqEvPvuzP1qJv"
+                "Celestial Nebula Dust", "Psychedelic warm orange and cream winding ribbon aesthetics.", "Rs. 1400", R.drawable.art_12, "https://google.com"
             )),
             StoreItem("art_asset_13", "13", Artwork(
-                "Golden Hour Whispers",
-                "Soft soothing botanical minimal leaf designs perfect for clean backdrops.",
-                "Rs. 1400",
-                R.drawable.art_13,
-                "https://drive.google.com/uc?id=1xtRaDMeejx0kqTVGDVsXzyYK6fU5RF_D"
+                "Golden Hour Whispers", "Soft soothing botanical minimal leaf designs perfect for clean backdrops.", "Rs. 1400", R.drawable.art_13, "https://google.com"
             )),
             StoreItem("art_asset_14", "14", Artwork(
-                "Retro Vaporwave Dream",
-                "Fantasy cosmic art blending butterfly wings with starlight dust.",
-                "Rs. 1400",
-                R.drawable.art_14,
-                "https://drive.google.com/uc?id=1yjgkVRhaSVhWNwk8ZBPsJZJrOWUqSqPC"
+                "Retro Vaporwave Dream", "Fantasy cosmic art blending butterfly wings with starlight dust.", "Rs. 1400", R.drawable.art_14, "https://google.com"
             )),
             StoreItem("art_asset_15", "15", Artwork(
-                "Zen Ink Balance",
-                "Rich impasto stroke simulation rendering pristine desert dunes.",
-                "Rs. 1400",
-                R.drawable.art_15,
-                "https://drive.google.com/uc?id=1yN-XY_LDBz11URByX9W6vWyK8FmBE0Xn"
+                "Zen Ink Balance", "Rich impasto stroke simulation rendering pristine desert dunes.", "Rs. 1400", R.drawable.art_15, "https://google.com"
             ))
         )
     }
 }
-class BillingManager(
-    private val activity: Activity,
-    private val onUnlock: (String) -> Unit,
-    private val onRestore: (String) -> Unit
-) {
-    private val billingClient: BillingClient
-    private val productDetailsCache = mutableMapOf<String, ProductDetails>()
-
-    // Only true while the user has an active purchase flow open (between launchPurchase
-    // and the result coming back). Play's setListener can redeliver a backlog of old,
-    // unacknowledged purchases on connection/reconnect — without this flag those would
-    // also call onUnlock and re-open every download link at once.
-    @Volatile
-    private var isPurchaseInProgress = false
-
-    init {
-        billingClient = BillingClient.newBuilder(activity)
-            .setListener { result, purchases ->
-                val wasUserInitiated = isPurchaseInProgress
-                isPurchaseInProgress = false
-
-                if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                    for (purchase in purchases) {
-                        val productId = purchase.products.firstOrNull() ?: continue
-                        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                            if (wasUserInitiated) {
-                                onUnlock(productId)
-                            } else {
-                                // Backlog/redelivered purchase, not a fresh buy — restore silently
-                                onRestore(productId)
-                            }
-
-                            // Permanent unlock: acknowledge only, never consume.
-                            // Consuming would let the same artwork be "bought" again later
-                            // instead of Play Billing recognizing it as already owned.
-                            if (!purchase.isAcknowledged) {
-                                val ack = AcknowledgePurchaseParams.newBuilder()
-                                    .setPurchaseToken(purchase.purchaseToken)
-                                    .build()
-                                billingClient.acknowledgePurchase(ack) {}
-                            }
-                        }
-                    }
-                } else if (result.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-                    // user backed out of the Play purchase sheet; nothing to do
-                } else {
-                    Toast.makeText(activity, "Purchase failed: ${result.debugMessage}", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
-            .build()
-
-        startConnection()
-    }
-
-    private fun startConnection() {
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    queryProductDetails()
-                    restorePurchases()
-                } else {
-                    Toast.makeText(activity, "Billing unavailable: ${billingResult.debugMessage}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                // Play will call startConnection again on the next purchase attempt if needed
-            }
-        })
-    }
-
-    private fun queryProductDetails() {
-        val productList = StoreData.getItems().map { item ->
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(item.productId)
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build()
-        }
-        val params = QueryProductDetailsParams.newBuilder().setProductList(productList).build()
-
-        billingClient.queryProductDetailsAsync(
-            params,
-            object : ProductDetailsResponseListener {
-                override fun onProductDetailsResponse(
-                    billingResult: BillingResult,
-                    productDetailsList: MutableList<ProductDetails>
-                ) {
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        for (details in productDetailsList) {
-                            productDetailsCache[details.productId] = details
-                        }
-                    }
-                }
-            }
-        )
-    }
-
-    // Restores already-owned unlocks (e.g. after reinstall) so they don't have to be rebought
-    private fun restorePurchases() {
-        val params = QueryPurchasesParams.newBuilder()
-            .setProductType(BillingClient.ProductType.INAPP)
-            .build()
-
-        billingClient.queryPurchasesAsync(
-            params,
-            object : PurchasesResponseListener {
-                override fun onQueryPurchasesResponse(
-                    billingResult: BillingResult,
-                    purchases: MutableList<Purchase>
-                ) {
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        for (purchase in purchases) {
-                            if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                                purchase.products.firstOrNull()?.let { onRestore(it) }
-                            }
-                        }
-                    }
-                }
-            }
-        )
-    }
-
-    fun launchPurchase(productId: String) {
-        val details = productDetailsCache[productId]
-        if (details == null) {
-            Toast.makeText(activity, "Item not ready yet, please try again", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val productDetailsParamsList = listOf(
-            BillingFlowParams.ProductDetailsParams.newBuilder()
-                .setProductDetails(details)
-                .build()
-        )
-
-        val flowParams = BillingFlowParams.newBuilder()
-            .setProductDetailsParamsList(productDetailsParamsList)
-            .build()
-
-        isPurchaseInProgress = true
-        billingClient.launchBillingFlow(activity, flowParams)
-    }
-}
-
+// 2. MAIN ACTIVITY
 class MainActivity : ComponentActivity() {
-
-    // Tracks which productIds are unlocked. Backed by SharedPreferences so unlocks
-    // survive process death (Play Billing restore in BillingManager also re-feeds this).
-    private lateinit var unlockedState: MutableState<Set<String>>
-    private lateinit var prefs: android.content.SharedPreferences
     private lateinit var billingManager: BillingManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        prefs = getSharedPreferences("unlocked_artworks", Context.MODE_PRIVATE)
-        val initiallyUnlocked = prefs.getStringSet("unlocked_ids", emptySet()) ?: emptySet()
+        // Local state trackers for purchased items
+        val unlockedItems = mutableStateListOf<String>()
+
+        billingManager = BillingManager(
+            activity = this,
+            onUnlock = { productId ->
+                unlockedItems.add(productId)
+                // Instantly open the download link when purchased
+                val item = StoreData.getItems().find { it.productId == productId }
+                item?.let { openDownloadLink(this, it.artwork.premiumDownloadUrl) }
+            },
+            onRestore = { productId ->
+                unlockedItems.add(productId)
+            }
+        )
 
         setContent {
-            unlockedState = remember { mutableStateOf(initiallyUnlocked) }
-            val unlockedIds by unlockedState
-
-            billingManager = remember {
-                BillingManager(
-                    activity = this,
-                    onUnlock = { productId -> markUnlocked(productId) },
-                    onRestore = { productId -> markRestored(productId) }
-                )
-            }
-
-            var selectedItem by remember { mutableStateOf<StoreItem?>(null) }
-
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(StoreData.getItems()) { item ->
-                            ArtworkCard(
-                                item = item,
-                                isUnlocked = unlockedIds.contains(item.productId),
-                                onClick = { selectedItem = item }
-                            )
-                        }
-                    }
+                    Column(modifier = Modifier.fillMaxSize()) {
 
-                    selectedItem?.let { item ->
-                        ArtworkDialog(
-                            item = item,
-                            isUnlocked = unlockedIds.contains(item.productId),
-                            onDismiss = { selectedItem = null },
-                            onBuy = { billingManager.launchPurchase(item.productId) },
-                            onDownload = { openDownloadLink(item.artwork.premiumDownloadUrl) }
-                        )
+                        // Clean Redirection Header Banner
+                        VisitWebGalleryHeader()
+
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier.weight(1f),
+                            contentPadding = PaddingValues(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(StoreData.getItems()) { item ->
+                                val isUnlocked = unlockedItems.contains(item.productId)
+                                ArtworkCard(item = item, isUnlocked = isUnlocked) {
+                                    if (isUnlocked) {
+                                        openDownloadLink(this@MainActivity, item.artwork.premiumDownloadUrl)
+                                    } else {
+                                        billingManager.launchPurchaseFlow(item.productId)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
-
-    private fun markUnlocked(productId: String) {
-        // Guard against duplicate PURCHASED callbacks for the same item re-opening the link
-        if (unlockedState.value.contains(productId)) return
-
-        val updated = unlockedState.value + productId
-        unlockedState.value = updated
-        prefs.edit().putStringSet("unlocked_ids", updated).apply()
-
-        // Auto-open the download link in the browser — only for a purchase that just happened
-        StoreData.getItems().firstOrNull { it.productId == productId }?.let {
-            openDownloadLink(it.artwork.premiumDownloadUrl)
-        }
-    }
-
-    // Silently restores ownership state on app launch. Never opens the download link —
-    // that would re-trigger a browser download every time the app starts.
-    private fun markRestored(productId: String) {
-        if (unlockedState.value.contains(productId)) return
-        val updated = unlockedState.value + productId
-        unlockedState.value = updated
-        prefs.edit().putStringSet("unlocked_ids", updated).apply()
-    }
-
-    private fun openDownloadLink(url: String) {
-        try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Couldn't open download link", Toast.LENGTH_SHORT).show()
+}
+// 3. UI LAYOUT COMPONENTS (COMPOSABLES)
+@Composable
+fun VisitWebGalleryHeader() {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+                val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.io"))
+                context.startActivity(webIntent)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2D6A4F)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Visit Web Gallery", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
         }
     }
 }
 
 @Composable
 fun ArtworkCard(item: StoreItem, isUnlocked: Boolean, onClick: () -> Unit) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .clickable { onClick() }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(0.8f)
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column {
             Image(
                 painter = painterResource(id = item.artwork.imageResId),
                 contentDescription = item.artwork.title,
-                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .weight(1f),
+                // CHANGED: Using .Crop with a capital C solves the unresolved reference instantly!
+                contentScale = ContentScale.Crop
             )
+
             Column(modifier = Modifier.padding(8.dp)) {
+                Text(text = item.artwork.title, fontWeight = FontWeight.Bold, fontSize = 14.sp, maxLines = 1)
                 Text(
-                    text = item.artwork.title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = if (isUnlocked) "Owned" else item.artwork.priceText,
-                    fontSize = 12.sp
+                    text = if (isUnlocked) "🔓 Purchased" else item.artwork.priceText,
+                    fontSize = 12.sp,
+                    color = if (isUnlocked) Color(0xFF2D6A4F) else MaterialTheme.colorScheme.primary
                 )
             }
         }
     }
 }
 
-@Composable
-fun ArtworkDialog(
-    item: StoreItem,
-    isUnlocked: Boolean,
-    onDismiss: () -> Unit,
-    onBuy: () -> Unit,
-    onDownload: () -> Unit
+// 4. HELPER UTILS
+fun openDownloadLink(context: Context, url: String) {
+    try {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Toast.makeText(context, "Unable to open link", Toast.LENGTH_SHORT).show()
+    }
+}
+
+// 5. BILLING MANAGER INFRASTRUCTURE
+class BillingManager(
+    private val activity: Activity,
+    private val onUnlock: (String) -> Unit,
+    private val onRestore: (String) -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(item.artwork.title) },
-        text = {
-            Column {
-                Image(
-                    painter = painterResource(id = item.artwork.imageResId),
-                    contentDescription = item.artwork.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(item.artwork.description)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = if (isUnlocked) "You own this artwork" else "Unlock for ${item.artwork.priceText}",
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start
-                )
+    private var billingClient: BillingClient
+    @Volatile private var isPurchaseInProgress = false
+
+    init {
+        billingClient = BillingClient.newBuilder(activity)
+            .setListener { result, purchases ->
+                val wasUserInitiated = isPurchaseInProgress
+                isPurchaseInProgress = false
+                if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                    for (purchase in purchases) {
+                        val productId = purchase.products.firstOrNull() ?: continue
+                        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                            if (wasUserInitiated) onUnlock(productId) else onRestore(productId)
+                            acknowledgePurchase(purchase)
+                        }
+                    }
+                }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                if (isUnlocked) onDownload() else onBuy()
-                if (isUnlocked) onDismiss()
-            }) {
-                Text(if (isUnlocked) "Download" else "Buy & Download")
+            .enablePendingPurchases()
+            .build()
+        startConnection()
+    }
+
+    private fun startConnection() {
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(result: BillingResult) {
+                if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                    queryPurchases()
+                }
             }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Close") }
+            override fun onBillingServiceDisconnected() {
+                startConnection()
+            }
+        })
+    }
+
+    private fun queryPurchases() {
+        val params = QueryPurchasesParams.newBuilder()
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build()
+        billingClient.queryPurchasesAsync(params) { _, purchases ->
+            for (purchase in purchases) {
+                val productId = purchase.products.firstOrNull() ?: continue
+                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                    onRestore(productId)
+                }
+            }
         }
-    )
+    }
+
+    fun launchPurchaseFlow(productId: String) {
+        isPurchaseInProgress = true
+        val productList = listOf(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(productId)
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
+        val params = QueryProductDetailsParams.newBuilder().setProductList(productList).build()
+        billingClient.queryProductDetailsAsync(params) { _, productDetailsList ->
+            val productDetails = productDetailsList.firstOrNull()
+            if (productDetails != null) {
+                val flowParams = BillingFlowParams.newBuilder()
+                    .setProductDetailsParamsList(listOf(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                            .setProductDetails(productDetails)
+                            .build()
+                    ))
+                    .build()
+                billingClient.launchBillingFlow(activity, flowParams)
+            } else {
+                isPurchaseInProgress = false
+                activity.runOnUiThread {
+                    Toast.makeText(activity, "Product not available", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun acknowledgePurchase(purchase: Purchase) {
+        if (!purchase.isAcknowledged) {
+            val params = AcknowledgePurchaseParams.newBuilder()
+                .setPurchaseToken(purchase.purchaseToken)
+                .build()
+            billingClient.acknowledgePurchase(params) { }
+        }
+    }
 }
