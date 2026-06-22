@@ -1,40 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Aesthetic Art Store</title>
-        <!-- Google Fonts Integration -->
-        <link rel="preconnect" href="https://googleapis.com">
-        <link rel="preconnect" href="https://gstatic.com" crossorigin>
-        <link href="https://googleapis.com/css2?family=Montserrat:wght@500;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
-
-        <link rel="stylesheet" href="style.css">
-    </head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aesthetic Art Store</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Montserrat:wght@500;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- Main Hero Container -->
 <main class="hero-container">
-    <!-- App Icon -->
     <img src="app_icon.png" alt="Aesthetic Art Store Icon" class="app-icon">
-
-    <!-- App Title & Description -->
     <h1 class="app-title">Aesthetic Art Store</h1>
     <p class="app-tagline">Your go-to mobile gallery for discovering, sharing, and collecting beautiful aesthetic art.</p>
 
-    <!-- Download Button -->
-    <a href="https://google.com" class="download-btn">
+    <!-- JavaScript Active Redirect Button -->
+    <button onclick="launchAppGallery()" class="download-btn">
         Enter Gallery
-    </a>
+    </button>
 </main>
-<!-- Insert this right below your download-btn link -->
-<!-- 4 App Screenshots Alignment Block -->
+
+<!-- 4 App Screenshots Side-by-Side -->
 <section class="app-screenshots">
     <h2>Take a Look Inside</h2>
     <div class="screenshot-wrapper">
@@ -45,10 +35,21 @@
     </div>
 </section>
 
+<!-- Footer Links with Google Drive Document Routing -->
 <footer class="footer-links">
-    <a href="https://docs.google.com/document/d/1htecGsxKwILMMNdRBmKDUF-UM8SJeXRL8J8HlvQvJ00/edit?usp=drive_link">Privacy Policy</a>
+    <a href="https://github.io" target="_blank" rel="noopener">Privacy Policy</a>
     <span>|</span>
+    <a href="https://github.io" target="_blank" rel="noopener">Terms of Service</a>
 </footer>
+
+<!-- Web-to-Kotlin Signal Controller -->
+<script>
+    function launchAppGallery() {
+        if (window.AndroidInterface) {
+            window.AndroidInterface.onEnterGalleryClicked();
+        }
+    }
+</script>
 
 </body>
 </html>
